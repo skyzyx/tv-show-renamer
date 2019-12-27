@@ -17,3 +17,7 @@ I tend to run it like this:
 find /path/to/shows -type f -name "*.m4v" -print0 \
 | xargs -0 --no-run-if-empty -I% ./itunes-store-complete-series-episode-fixer.sh "%"
 ```
+
+## Support
+
+None. If you have an issue, submit a PR with a fix.
