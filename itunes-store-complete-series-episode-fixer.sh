@@ -59,5 +59,5 @@ $_mp4tags -season "$season" "$1"
 $_echo "Updating episode..."
 $_mp4tags -episode "$episode" "$1"
 
-# $_echo "Updating title..."
-# $_mp4tags -song "$newtitle" "$1"
+$_echo "Updating title..."
+$_mp4tags -song "$newtitle" "$1"
