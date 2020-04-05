@@ -22,7 +22,7 @@ _sed=/usr/local/opt/gnu-sed/libexec/gnubin/sed
 description=$($_mp4info "$1" | $_grep --color=never "^ Long Description:" | $_sed -r "s/^ Long Description: //")
 
 # Clean-up real names after character names
-description=$($_echo $description | $_sed -r "s/ \((\w+ )?\w+,? \w+\.?\)//g")
+description=$($_echo $description | $_sed -r "s/ \((guest star )?(\w+ )?\w+,? \w+\.?\)//g")
 
 # Strip HTML from descriptions
 description=$($_echo $description | $_sed -r "s/<\/?([^>])>//g")
