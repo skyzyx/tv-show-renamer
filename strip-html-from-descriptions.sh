@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 
 ##
-# Copyright (c) 2019 Ryan Parman <https://ryanparman.com>
+# Copyright (c) 2019-2020 Ryan Parman <https://ryanparman.com>
 # License: MIT <https://opensource.org/licenses/MIT>
 #
 # Assumes GNU tools instead of BSD tools: <https://flwd.dk/31ELAKJ>
@@ -22,27 +22,29 @@ _sed=/usr/local/opt/gnu-sed/libexec/gnubin/sed
 description=$($_mp4info "$1" | $_grep --color=never "^ Long Description:" | $_sed -r "s/^ Long Description: //")
 
 # Clean-up real names after character names
-description=$($_echo $description | $_sed -r "s/ \((guest star )?(\w+ )?\w+,? \w+\.?\)//g")
+description=$($_echo "$description" | $_sed -r "s/ \((guest star )?(\w+ )?\w+,? \w+\.?\)//g")
+description=$($_echo "$description" | $_sed -r "s/ \((recurring guest star )?(\w+ )?\w+,? \w+\.?\)//g")
+description=$($_echo "$description" | $_sed -r "s/ \((series star )?(\w+ )?\w+,? \w+\.?\)//g")
 
 # Strip HTML from descriptions
-description=$($_echo $description | $_sed -r "s/<\/?([^>])>//g")
-description=$($_echo $description | $_sed -r "s/ &amp; / and /g")
+description=$($_echo "$description" | $_sed -r "s/<\/?([^>])>//g")
+description=$($_echo "$description" | $_sed -r "s/ &amp; / and /g")
 
 # Fancy double-quotes
-description=$($_echo $description | $_sed -r "s/ \"/ “/g")
-description=$($_echo $description | $_sed -r "s/\"/”/g")
+description=$($_echo "$description" | $_sed -r "s/ \"/ “/g")
+description=$($_echo "$description" | $_sed -r "s/\"/”/g")
 
 # Fancy single-quotes/apostrophes
-description=$($_echo $description | $_sed -r "s/([a-zA-Z])'([a-zA-Z])/\1’\2/g")
+description=$($_echo "$description" | $_sed -r "s/([a-zA-Z])'([a-zA-Z])/\1’\2/g")
 
 # Em-dash all the things
-description=$($_echo $description | $_sed -r "s/([a-zA-Z])\s?---?\s?([a-zA-Z])/\1 — \2/g")
+description=$($_echo "$description" | $_sed -r "s/([a-zA-Z])\s?---?\s?([a-zA-Z])/\1 — \2/g")
 
 $_echo "DESCRIPTION for $1:"
 $_echo " "
-$_echo $description
+$_echo "$description"
 $_echo "------------------------------------------------------------"
-$_read -p "Press any key to continue, or press Control+C to cancel. " x;
+$_read -p "Press any key to continue, or press Control+C to cancel. " x
 
 # Write the data back to the file
 $_echo "Updating long description..."

@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 
 ##
-# Copyright (c) 2019 Ryan Parman <https://ryanparman.com>
+# Copyright (c) 2019-2020 Ryan Parman <https://ryanparman.com>
 # License: MIT <https://opensource.org/licenses/MIT>
 #
 # Assumes GNU tools instead of BSD tools: <https://flwd.dk/31ELAKJ>
@@ -22,35 +22,38 @@ _sed=/usr/local/opt/gnu-sed/libexec/gnubin/sed
 _xargs=/usr/local/opt/findutils/libexec/gnubin/xargs
 
 title=$($_mp4info "$1" | $_grep --color=never "^ Name:" | $_sed -r "s/^ Name: //")
-title=$($_echo $title | $_sed -r "s/ & / and /g")
+title=$($_echo "$title" | $_sed -r "s/ & / and /g")
 
 # Fancy double-quotes
-title=$($_echo $title | $_sed -r "s/ \"/ “/g")
-title=$($_echo $title | $_sed -r "s/\"/”/g")
+title=$($_echo "$title" | $_sed -r "s/ \"/ “/g")
+title=$($_echo "$title" | $_sed -r "s/\"/”/g")
 
 # Fancy single-quotes/apostrophes
-title=$($_echo $title | $_sed -r "s/([a-zA-Z])'([a-zA-Z])/\1’\2/g")
+title=$($_echo "$title" | $_sed -r "s/([a-zA-Z])'([a-zA-Z])/\1’\2/g")
 
 # Em-dash all the things
-title=$($_echo $title | $_sed -r "s/([a-zA-Z])\s?---?\s?([a-zA-Z])/\1 — \2/g")
+title=$($_echo "$title" | $_sed -r "s/([a-zA-Z])\s?---?\s?([a-zA-Z])/\1 — \2/g")
 
-# Grab Season and Episode identifiers
-season=$($_echo $title | $_cut -d ',' -f1 | $_cut -d ' ' -f2)
-episode=$($_echo $title | $_cut -d ',' -f2 | $_cut -d ' ' -f3 | $_cut -d ':' -f1)
+# [PRIMARY] Grab Season and Episode identifiers (Season {season}, Episode {episode}: {title})
+season=$($_echo "$title" | $_cut -d ',' -f1 | $_cut -d ' ' -f2)
+episode=$($_echo "$title" | $_cut -d ',' -f2 | $_cut -d ' ' -f3 | $_cut -d ':' -f1)
+newtitle=$($_echo "$title" | $_cut -d ':' -f2-9 | $_xargs $_echo -n)
 
-# Strip Season and Episode off the title
-newtitle=$($_echo $title | $_cut -d ':' -f2-9 | $_xargs $_echo -n)
+# [ALTERNATE] Grab Season and Episode identifiers (Season {season}, Episode {episode}, {title})
+# season=$($_echo "$title" | $_cut -d ',' -f1 | $_cut -d ' ' -f2)
+# episode=$($_echo "$title" | $_cut -d ',' -f2 | $_xargs -I% $_echo -n "%" | $_cut -d ' ' -f2)
+# newtitle=$($_echo "$title" | $_cut -d ',' -f3-9 | $_xargs $_echo -n)
 
 $_echo "SEASON for $1:"
-$_echo $season
+$_echo "$season"
 $_echo " "
 $_echo "EPISODE for $1:"
-$_echo $episode
+$_echo "$episode"
 $_echo " "
 $_echo "TITLE for $1:"
-$_echo $newtitle
+$_echo "$newtitle"
 $_echo "------------------------------------------------------------"
-$_read -p "Press any key to continue, or press Control+C to cancel. " x;
+$_read -p "Press any key to continue, or press Control+C to cancel. " x
 
 # Write the data back to the file
 $_echo "Updating season..."
